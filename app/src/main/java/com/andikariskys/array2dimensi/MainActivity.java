@@ -1,16 +1,20 @@
 package com.andikariskys.array2dimensi;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,26 @@ public class MainActivity extends AppCompatActivity {
                 getDaftarMakanan();
                 tbTambahData.setText("");
                 System.out.println(tbTambahData.getText());
+            }
+        });
+
+        listData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                alertDialog.setTitle("Opsi Anda");
+                alertDialog.setMessage(dataMakanan.get(position));
+
+                alertDialog.setNegativeButton("Hapus", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dataMakanan.remove(position);
+                        getDaftarMakanan();
+                    }
+                });
+
+                AlertDialog dialog = alertDialog.create();
+                dialog.show();
             }
         });
     }

@@ -1,9 +1,12 @@
 package com.andikariskys.array2dimensi;
 
+import static android.graphics.Color.*;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -22,8 +25,10 @@ public class MainActivity extends AppCompatActivity {
 
     EditText tbTambahData;
     Button btnSimpan;
+    Button btnCancel;
     ListView listData;
     ArrayList<String> dataMakanan = new ArrayList();
+    String indexList = null;
 
 
     @Override
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         tbTambahData = findViewById(R.id.etTambahMakanan);
         btnSimpan = findViewById(R.id.btnTambah);
+        btnCancel = findViewById(R.id.btnCancel);
+        btnCancel.setBackgroundColor(RED);
         listData = findViewById(R.id.list_makanan);
 
         dataMakanan.add("Nasi Goreng");
@@ -44,10 +51,13 @@ public class MainActivity extends AppCompatActivity {
         btnSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dataMakanan.add(tbTambahData.getText().toString());
+                if (indexList == null) {
+                    dataMakanan.add(tbTambahData.getText().toString());
+                } else {
+                    dataMakanan.set(Integer.parseInt(indexList), tbTambahData.getText().toString());
+                }
                 getDaftarMakanan();
-                tbTambahData.setText("");
-                System.out.println(tbTambahData.getText());
+                resetTextbox();
             }
         });
 
@@ -63,6 +73,17 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dataMakanan.remove(position);
                         getDaftarMakanan();
+                        resetTextbox();
+                    }
+                });
+
+                alertDialog.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        indexList = String.valueOf(position);
+                        tbTambahData.setText(dataMakanan.get(position));
+                        btnSimpan.setText("Simpan");
+                        btnCancel.setVisibility(View.VISIBLE);
                     }
                 });
 
@@ -70,6 +91,20 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetTextbox();
+            }
+        });
+    }
+
+    private void resetTextbox() {
+        tbTambahData.setText("");
+        indexList = null;
+        btnSimpan.setText("Tambah");
+        btnCancel.setVisibility(View.GONE);
     }
 
     private void getDaftarMakanan() {
